@@ -51,7 +51,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // create an si7021 object named sensor
 Adafruit_Si7021 sensor = Adafruit_Si7021();
 
-// set up the 'temperature' and 'humidity' feeds
+// set up the 'temperature', 'humidity', and 'callapi' feeds
 AdafruitIO_Feed *temperature = io.feed("temperature");
 AdafruitIO_Feed *humidity = io.feed("humidity");
 AdafruitIO_Feed *callapi = io.feed("callapi");
@@ -71,7 +71,7 @@ void setup() {
     for(;;); // Don't proceed, loop forever
   }
 
-  // wait for serial monitor to open
+  // wait for serial connection to establish itself
   while(! Serial);
 
   // initialize the si7021 sensor
@@ -125,7 +125,7 @@ void loop() {
   // save fahrenheit (or celsius) to Adafruit IO
   temperature->save(fahrenheit); //updating adafruit io
 
-  float humi = sensor.readHumidity();
+  float humi = sensor.readHumidity(); //read sensor humidity and assign to float named humi
 
   Serial.print("humidity: ");
   Serial.print(humi); // reading humidity from the sensor and printing it to serial
@@ -158,6 +158,7 @@ void handleMessage(AdafruitIO_Data *data) {
     display.println();
     display.println();
     display.println("Humidity (API): " + getMet());
+    Serial.println("Writing to OLED display.");
     display.display();
     delay(5000); //delay so the user can read the output information
   }
